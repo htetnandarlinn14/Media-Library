@@ -3,10 +3,10 @@
 namespace App\Service;
 
 use App\Contract\CatalogInterface;
-use App\Repository\CatalogRepository;
 use App\DB\Database;
+use App\Repository\CatalogRepository;
 
-class CatalogService 
+class CatalogService
 {
     private const ITEMS_PER_PAGE = 8;
 
@@ -39,7 +39,7 @@ class CatalogService
         $search = $this->getSearchTerm($queryParams);
         $currentPage = $this->getCurrentPage($queryParams);
 
-        $totalItems = $this->get_catalog_count($section, $search) ?? 0;
+        $totalItems = $this->getCatalogCount($section, $search) ?? 0;
 
         $pagination = $this->buildPagination($totalItems, $currentPage);
 
@@ -53,7 +53,7 @@ class CatalogService
         $foundInFullCatalog = 0;
 
         if ($search !== null && $section !== null) {
-            $foundInFullCatalog = $this->get_catalog_count(null, $search) ?? 0;
+            $foundInFullCatalog = $this->getCatalogCount(null, $search) ?? 0;
         }
 
         return [
@@ -160,7 +160,7 @@ class CatalogService
         int $offset
     ): array {
         if ($search !== null && $section !== null) {
-            return $this->search_catalog_array(
+            return $this->searchCatalogArray(
                 $search,
                 $section,
                 $limit,
@@ -169,7 +169,7 @@ class CatalogService
         }
 
         if ($search !== null) {
-            return $this->search_catalog_array(
+            return $this->searchCatalogArray(
                 $search,
                 null,
                 $limit,
@@ -178,14 +178,14 @@ class CatalogService
         }
 
         if ($section !== null) {
-            return $this->category_catalog_array(
+            return $this->categoryCatalogArray(
                 $section,
                 $limit,
                 $offset
             );
         }
 
-        return $this->full_catalog_array(
+        return $this->fullCatalogArray(
             $limit,
             $offset
         );
@@ -207,42 +207,49 @@ class CatalogService
      * =========================================================
      */
 
-    public function get_catalog_count($section, $search)
+    public function getCatalogCount($section, $search)
     {
-        return $this->repo->getcatalog_count($section, $search);
+        return $this->repo->count([
+            'category' => $section,
+            'search' => $search
+        ]);
     }
 
-    public function search_catalog_array($search, $section, $limit, $offset)
+    public function searchCatalogArray($search, $section, $limit, $offset)
     {
-        return $this->repo->get_search_catalog(
-            $search,
-            $section,
+        return $this->repo->getAll(
+            [
+                'search' => $search,
+                'category' => $section
+            ],
             $limit,
             $offset
         );
     }
 
-    public function category_catalog_array($section, $limit, $offset)
+    public function categoryCatalogArray($section, $limit, $offset)
     {
-        return $this->repo->get_category_catalog(
-            $section,
+        return $this->repo->getAll(
+            [
+                'category' => $section
+            ],
             $limit,
             $offset
         );
     }
 
-    public function full_catalog_array($limit, $offset)
+    public function fullCatalogArray($limit, $offset)
     {
-        return $this->repo->get_full_catalog($limit, $offset);
+        return $this->repo->getAll([], $limit, $offset);
     }
 
-    public function random_catalog_array()
+    public function randomCatalogArray()
     {
-        return $this->repo->get_random_catalog();
+        return $this->repo->getRandomCatalog();
     }
 
-    public function single_item_array($id)
+    public function singleItemArray($id)
     {
-        return $this->repo->get_single_item($id);
+        return $this->repo->read($id);
     }
 }

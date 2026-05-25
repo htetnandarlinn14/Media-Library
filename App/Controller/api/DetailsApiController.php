@@ -4,7 +4,6 @@ namespace App\Controller\api;
 use App\Service\CatalogService;
 
 class DetailsApiController
-
 {
     private CatalogService $catalogService;
 
@@ -36,7 +35,7 @@ class DetailsApiController
         }
 
         // Get item data from service
-        $item = $this->catalogService->single_item_array($id);
+        $item = $this->catalogService->singleItemArray($id);
 
         // Item not found response
         if (empty($item)) {

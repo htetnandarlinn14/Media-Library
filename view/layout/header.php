@@ -46,6 +46,19 @@
                     <img src="<?= BASE_URL ?>/img/suggestion.png"> Suggest
                 </a>
             </li>
+
+            <?php if (!empty($_SESSION['user'])): ?>
+                <li class="<?= ($section === 'logout') ? 'on' : '' ?>">
+                    <a href="<?= BASE_URL ?>/Public/index.php?page=logout">Logout</a>
+                </li>
+            <?php else: ?>
+                <li class="<?= ($section === 'login') ? 'on' : '' ?>">
+                    <a href="<?= BASE_URL ?>/Public/index.php?page=login">Login</a>
+                </li>
+                <li class="<?= ($section === 'register') ? 'on' : '' ?>">
+                    <a href="<?= BASE_URL ?>/Public/index.php?page=register">Register</a>
+                </li>
+            <?php endif; ?>
         </ul>
 
     </div>

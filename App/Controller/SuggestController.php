@@ -3,10 +3,6 @@
 namespace App\Controller;
 
 use App\Service\FormatService;
-/**
- * Handles media suggestion requests,
- * form validation, and email sending.
- */
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -40,9 +36,9 @@ class SuggestController
         }
 
         // Load dropdown data
-        $categories = $this->formatService->category_drop_down();
-        $formats = $this->formatService->format_array();
-        $genres = $this->formatService->genres_array();
+        $categories = $this->formatService->categoryDropDown();
+        $formats = $this->formatService->formatArray();
+        $genres = $this->formatService->genresArray();
 
         require BASE_PATH . '/view/suggest.php';
     }

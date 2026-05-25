@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-
 use App\Contract\CatalogInterface;
 use PDO;
 
@@ -10,23 +9,82 @@ use PDO;
  * Handles catalog database operations using PDO
  * and communicates with stored procedures.
  */
-class CatalogRepository implements CatalogInterface
+class CatalogRepository extends BaseRepository implements CatalogInterface
 {
-    private PDO $db;
-
     public function __construct(PDO $db)
     {
-        // Store database connection
-        $this->db = $db;
+        parent::__construct($db, 'Media', 'media_id');
     }
 
     // Get total catalog item count
-    function getcatalog_count($category = null, $search = null)
+    public function count(array $criteria = [])
+    {
+        return $this->getCatalogCount(
+            $criteria['category'] ?? null,
+            $criteria['search'] ?? null
+        );
+    }
+
+    // Get complete catalog list with pagination
+    public function getAll(array $criteria = [], $limit = null, $offset = null)
+    {
+        return $this->getCatalogItems(
+            $criteria['search'] ?? null,
+            $criteria['category'] ?? null,
+            $limit,
+            $offset
+        );
+    }
+
+    // Get random catalog items
+    public function getRandomCatalog()
+    {
+        $result = $this->db->query(' SELECT * FROM view_random ');
+
+        $catalog = $result->fetchAll();
+
+        return $catalog;
+    }
+
+    public function read(int $id)
+    {
+        return $this->fetchItemDetail($id);
+    }
+
+    protected function fetchItemDetail(int $id)
+    {
+        $statement = $this->db->prepare('CALL sp_get_item_full_detail(:media_id)');
+        $statement->bindValue(':media_id', $id, PDO::PARAM_INT);
+        $statement->execute();
+
+        $details = $statement->fetch(PDO::FETCH_ASSOC);
+        $statement->nextRowset();
+
+        $people = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+
+        if ($details === false) {
+            return null;
+        }
+
+        foreach ($people as $person) {
+            if (empty($person['fullname']) || empty($person['role'])) {
+                continue;
+            }
+
+            $role = strtolower($person['role']);
+            $details[$role][] = $person['fullname'];
+        }
+
+        return $details;
+    }
+
+    protected function getCatalogCount($category = null, $search = null)
     {
         $search = !empty($search) ? $search : null;
         $category = !empty($category) ? $category : null;
 
-        $result = $this->db->prepare(' CALL sp_search_catalog_count (:search , :category)');
+        $result = $this->db->prepare('CALL sp_search_catalog_count (:search, :category)');
 
         $result->bindValue(
             ':search',
@@ -50,59 +108,12 @@ class CatalogRepository implements CatalogInterface
         return $count;
     }
 
-    // Get complete catalog list with pagination
-    function get_full_catalog($limit = null, $offset = 0)
-    {
-        $result = $this->db->prepare(' CALL sp_get_full_catalog ( ? , ? )');
-
-        $result->bindParam(
-            1,
-            $limit,
-            $limit === null ? PDO::PARAM_NULL : PDO::PARAM_INT
-        );
-
-        $result->bindParam(2, $offset, PDO::PARAM_INT);
-
-        $result->execute();
-
-        $catalog = $result->fetchAll();
-
-        $result->closeCursor();
-
-        return $catalog;
-    }
-
-    // Get catalog items by category
-    function get_category_catalog($category, $limit = null, $offset = 0)
-    {
-        $result = $this->db->prepare(' CALL sp_get_catalog ( ? , ? , ? )');
-
-        $result->bindParam(1, $category, PDO::PARAM_STR);
-
-        $result->bindParam(
-            2,
-            $limit,
-            $limit === null ? PDO::PARAM_NULL : PDO::PARAM_INT
-        );
-
-        $result->bindParam(3, $offset, PDO::PARAM_INT);
-
-        $result->execute();
-
-        $catalog = $result->fetchAll();
-
-        $result->closeCursor();
-
-        return $catalog;
-    }
-
-    // Search catalog items by keyword and category
-    function get_search_catalog($search, $category = null, $limit = null, $offset = 0)
+    protected function getCatalogItems($search = null, $category = null, $limit = null, $offset = 0)
     {
         $search = ($search === '' ? null : $search);
         $category = ($category === '' ? null : $category);
 
-        $result = $this->db->prepare(' CALL sp_search_catalog (? , ? , ? , ? )');
+        $result = $this->db->prepare('CALL sp_search_catalog (?, ?, ?, ?)');
 
         $result->bindValue(
             1,
@@ -127,44 +138,5 @@ class CatalogRepository implements CatalogInterface
         $result->closeCursor();
 
         return $catalog;
-    }
-
-    // Get random catalog items
-    function get_random_catalog()
-    {
-        $result = $this->db->query(' SELECT * FROM view_random ');
-
-        $catalog = $result->fetchAll();
-
-        return $catalog;
-    }
-
-    // Get detailed information for a single item
-    function get_single_item($id)
-    {
-        $result = $this->db->prepare('CALL sp_get_item_full_detail (?)');
-
-        $result->bindParam(1, $id, PDO::PARAM_INT);
-
-        $result->execute();
-
-        $item = $result->fetch(PDO::FETCH_ASSOC);
-
-        // Return null if item does not exist
-        if ($item === false) {
-            $result->closeCursor();
-            return null;
-        }
-
-        $result->nextRowset();
-
-        // Load related people data (actors, authors, etc.)
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $item[strtolower($row['role'])][] = $row['fullname'];
-        }
-
-        $result->closeCursor();
-
-        return $item;
     }
 }

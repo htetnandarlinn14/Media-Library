@@ -26,20 +26,20 @@ class FormatService
     }
 
     // Get format dropdown data
-    function format_array($category = null)
+    public function formatArray($category = null)
     {
-        return $this->repo->get_format_drop_down($category);
+        return $this->repo->getFormatDropDown($category);
     }
 
     // Get category dropdown data
-    function category_drop_down()
+    public function categoryDropDown()
     {
-        return $this->repo->get_category_drop_down();
+        return $this->repo->getCategoryDropDown();
     }
 
     // Get genres dropdown data
-    function genres_array($category = null)
+    public function genresArray($category = null)
     {
-        return $this->repo->get_genres_drop_down($category);
+        return $this->repo->getGenresDropDown($category);
     }
 }

@@ -179,6 +179,20 @@ INSERT INTO `Books`(`media_id`,`publisher`,`isbn`) VALUES
 (12,'MIT Press','9780262033848');
 
 
+-- =========================================
+-- USERS TABLE
+-- =========================================
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `user_id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(50) NOT NULL UNIQUE,
+  `email` VARCHAR(150) NOT NULL UNIQUE,
+  `password` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`)
+);
+
 
 
 

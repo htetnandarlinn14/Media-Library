@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Controller\api;
+
 use App\Service\CatalogService;
+
 class CatalogApiController
 {
     private CatalogService $catalogService;
@@ -17,7 +19,7 @@ class CatalogApiController
 
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         if ($id !== null && $id !== false) {
-            $item = $this->catalogService->single_item_array($id);
+            $item = $this->catalogService->singleItemArray($id);
             if (empty($item)) {
                 http_response_code(404);
                 echo json_encode([

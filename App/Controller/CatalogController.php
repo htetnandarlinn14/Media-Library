@@ -21,7 +21,7 @@ class CatalogController
         $pageTitle = 'Personal Media Library';
         $section = 'catalog';
 
-        $random = $this->catalogService->random_catalog_array();
+        $random = $this->catalogService->randomCatalogArray();
 
         require BASE_PATH . '/view/home.php';
     }

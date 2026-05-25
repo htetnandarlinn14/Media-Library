@@ -3,8 +3,6 @@
 namespace App\Controller\api;
 
 use App\Service\FormatService;
-
-
 use PHPMailer\PHPMailer\PHPMailer;
 
 class SuggestApiController
@@ -27,9 +25,9 @@ class SuggestApiController
             echo json_encode([
                 'success' => true,
                 'message' => 'Use POST to submit a suggestion.',
-                'categories' => $this->formatService->category_drop_down(),
-                'formats' => $this->formatService->format_array(),
-                'genres' => $this->formatService->genres_array()
+                'categories' => $this->formatService->categoryDropDown(),
+                'formats' => $this->formatService->formatArray(),
+                'genres' => $this->formatService->genresArray()
             ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             exit;
         }

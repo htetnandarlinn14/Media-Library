@@ -9,11 +9,11 @@ namespace App\Contract;
 interface FormatInterface
 {
     // Get format dropdown list
-    public function get_format_drop_down($category = null);
+    public function getFormatDropDown($category = null);
 
     // Get category dropdown list
-    public function get_category_drop_down();
+    public function getCategoryDropDown();
 
     // Get genres dropdown list
-    public function get_genres_drop_down($category = null);
+    public function getGenresDropDown($category = null);
 }

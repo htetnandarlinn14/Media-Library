@@ -4,14 +4,17 @@
 use App\Controller\api\CatalogApiController;
 use App\Controller\api\DetailsApiController;
 use App\Controller\api\SuggestApiController;
+use App\Controller\AuthController;
 use App\Controller\CatalogController;
 use App\Controller\DetailsController;
 use App\Controller\SuggestController;
 use App\DB\Database;
 use App\Repository\CatalogRepository;
 use App\Repository\FormatRepository;
+use App\Repository\UserRepository;
 use App\Service\CatalogService;
 use App\Service\FormatService;
+use App\Service\UserService;
 
 /**
  * Main application entry point.
@@ -37,6 +40,10 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 /* BUILD SHARED OBJECTS */
 
 $db = Database::getConnection();
@@ -48,6 +55,8 @@ $formatRepo = new FormatRepository($db);
 /* Services */
 $catalogService = new CatalogService($catalogRepo);
 $formatService = new FormatService($formatRepo);
+$userRepo = new UserRepository($db);
+$userService = new UserService($userRepo);
 
 /* ROUTING */
 
@@ -70,21 +79,39 @@ switch ($page) {
         break;
 
     case 'api/catalog':
-        require_once BASE_PATH . '/Controller/api/CatalogApiController.php';
+        require_once BASE_PATH . '/App/Controller/api/CatalogApiController.php';
         $controller = new CatalogApiController($catalogService);
         $controller->index();
         break;
 
     case 'api/details':
-        require_once BASE_PATH . '/Controller/api/DetailsApiController.php';
+        require_once BASE_PATH . '/App/Controller/api/DetailsApiController.php';
         $controller = new DetailsApiController($catalogService);
         $controller->show();
         break;
 
     case 'api/suggest':
-        require_once BASE_PATH . '/Controller/api/SuggestApiController.php';
+        require_once BASE_PATH . '/App/Controller/api/SuggestApiController.php';
         $controller = new SuggestApiController($formatService);
         $controller->index();
+        break;
+
+    case 'login':
+        require_once BASE_PATH . '/App/Controller/AuthController.php';
+        $controller = new AuthController($userService);
+        $controller->login();
+        break;
+
+    case 'register':
+        require_once BASE_PATH . '/App/Controller/AuthController.php';
+        $controller = new AuthController($userService);
+        $controller->register();
+        break;
+
+    case 'logout':
+        require_once BASE_PATH . '/App/Controller/AuthController.php';
+        $controller = new AuthController($userService);
+        $controller->logout();
         break;
 
     default:  // HOME PAGE

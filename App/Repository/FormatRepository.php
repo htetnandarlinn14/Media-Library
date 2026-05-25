@@ -20,7 +20,7 @@ class FormatRepository implements FormatInterface
     }
 
     // Get formats based on selected category
-    function get_format_drop_down($category = null)
+    public function getFormatDropDown($category = null)
     {
         $result = $this->db->prepare(' CALL sp_get_formats_by_category (:category)');
 
@@ -44,7 +44,7 @@ class FormatRepository implements FormatInterface
     }
 
     // Get all unique categories
-    function get_category_drop_down()
+    public function getCategoryDropDown()
     {
         $sql = ' SELECT DISTINCT category FROM view_catalog ORDER BY category';
 
@@ -55,7 +55,7 @@ class FormatRepository implements FormatInterface
     }
 
     // Get genres based on selected category
-    function get_genres_drop_down($category = null)
+    public function getGenresDropDown($category = null)
     {
         $result = $this->db->prepare(' CALL sp_get_genres_by_category (:category)');
 
