@@ -1,11 +1,16 @@
 <?php
 
+namespace App\Repository;
+
+
+use App\Contract\CatalogInterface;
+use PDO;
+
 /**
  * Handles catalog database operations using PDO
  * and communicates with stored procedures.
  */
-
-class CatalogRepository implements CatalogRepositoryInterface
+class CatalogRepository implements CatalogInterface
 {
     private PDO $db;
 
@@ -21,7 +26,7 @@ class CatalogRepository implements CatalogRepositoryInterface
         $search = !empty($search) ? $search : null;
         $category = !empty($category) ? $category : null;
 
-        $result = $this->db->prepare(" CALL sp_search_catalog_count (:search , :category)");
+        $result = $this->db->prepare(' CALL sp_search_catalog_count (:search , :category)');
 
         $result->bindValue(
             ':search',
@@ -48,7 +53,7 @@ class CatalogRepository implements CatalogRepositoryInterface
     // Get complete catalog list with pagination
     function get_full_catalog($limit = null, $offset = 0)
     {
-        $result = $this->db->prepare(" CALL sp_get_full_catalog ( ? , ? )");
+        $result = $this->db->prepare(' CALL sp_get_full_catalog ( ? , ? )');
 
         $result->bindParam(
             1,
@@ -70,7 +75,7 @@ class CatalogRepository implements CatalogRepositoryInterface
     // Get catalog items by category
     function get_category_catalog($category, $limit = null, $offset = 0)
     {
-        $result = $this->db->prepare(" CALL sp_get_catalog ( ? , ? , ? )");
+        $result = $this->db->prepare(' CALL sp_get_catalog ( ? , ? , ? )');
 
         $result->bindParam(1, $category, PDO::PARAM_STR);
 
@@ -97,7 +102,7 @@ class CatalogRepository implements CatalogRepositoryInterface
         $search = ($search === '' ? null : $search);
         $category = ($category === '' ? null : $category);
 
-        $result = $this->db->prepare(" CALL sp_search_catalog (? , ? , ? , ? )");
+        $result = $this->db->prepare(' CALL sp_search_catalog (? , ? , ? , ? )');
 
         $result->bindValue(
             1,
@@ -127,7 +132,7 @@ class CatalogRepository implements CatalogRepositoryInterface
     // Get random catalog items
     function get_random_catalog()
     {
-        $result = $this->db->query(" SELECT * FROM view_random ");
+        $result = $this->db->query(' SELECT * FROM view_random ');
 
         $catalog = $result->fetchAll();
 
@@ -137,7 +142,7 @@ class CatalogRepository implements CatalogRepositoryInterface
     // Get detailed information for a single item
     function get_single_item($id)
     {
-        $result = $this->db->prepare("CALL sp_get_item_full_detail (?)");
+        $result = $this->db->prepare('CALL sp_get_item_full_detail (?)');
 
         $result->bindParam(1, $id, PDO::PARAM_INT);
 

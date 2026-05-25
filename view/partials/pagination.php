@@ -1,3 +1,15 @@
+<?php
+$total_pages = $total_pages ?? 0;
+$current_page = $current_page ?? 1;
+$section = $section ?? null;
+$search = $search ?? null;
+?>
+<?php
+$total_pages = $total_pages ?? 0;
+$current_page = $current_page ?? 1;
+$section = $section ?? null;
+$search = $search ?? null;
+?>
 <?php if ($total_pages > 1): ?>
 <div class="pagination">
     Pages:
@@ -7,12 +19,14 @@
             <span><?= $i ?></span>
         <?php else: ?>
             <?php
-                $query = [
-                    'page' => 'catalog',
-                    'pg'   => $i
-                ];
-                if (!empty($section)) $query['cat'] = $section;
-                if (!empty($search))  $query['s']   = $search;
+            $query = [
+                'page' => 'catalog',
+                'pg' => $i
+            ];
+            if (!empty($section))
+                $query['cat'] = $section;
+            if (!empty($search))
+                $query['s'] = $search;
             ?>
             <a href="index.php?<?= http_build_query($query) ?>">
                 <?= $i ?>

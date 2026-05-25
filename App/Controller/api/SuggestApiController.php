@@ -1,11 +1,10 @@
 <?php
 
-/**
- * Handles media suggestion requests,
- * form validation, and email sending.
- */
+namespace App\Controller\api;
 
-use PHPMailer\PHPMailer\Exception;
+use App\Service\FormatService;
+
+
 use PHPMailer\PHPMailer\PHPMailer;
 
 class SuggestApiController

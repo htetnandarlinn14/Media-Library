@@ -1,6 +1,12 @@
 <?php
 
-class CatalogService
+namespace App\Service;
+
+use App\Contract\CatalogInterface;
+use App\Repository\CatalogRepository;
+use App\DB\Database;
+
+class CatalogService 
 {
     private const ITEMS_PER_PAGE = 8;
 
@@ -10,9 +16,9 @@ class CatalogService
         'music'
     ];
 
-    private CatalogRepositoryInterface $repo;
+    private CatalogInterface $repo;
 
-    public function __construct(?CatalogRepositoryInterface $repo = null)
+    public function __construct(?CatalogInterface $repo = null)
     {
         if ($repo === null) {
             $db = Database::getConnection();
@@ -22,9 +28,11 @@ class CatalogService
         $this->repo = $repo;
     }
 
-    /* =========================================================
+    /*
+     * =========================================================
      * MAIN METHOD (Controller calls ONLY this)
-     * ========================================================= */
+     * =========================================================
+     */
     public function getCatalogPage(array $queryParams): array
     {
         $section = $this->getCategory($queryParams);
@@ -62,9 +70,11 @@ class CatalogService
         ];
     }
 
-    /* =========================================================
+    /*
+     * =========================================================
      * FILTER: CATEGORY
-     * ========================================================= */
+     * =========================================================
+     */
     private function getCategory(array $queryParams): ?string
     {
         $category = $queryParams['cat'] ?? null;
@@ -79,9 +89,11 @@ class CatalogService
         return null;
     }
 
-    /* =========================================================
+    /*
+     * =========================================================
      * FILTER: SEARCH
-     * ========================================================= */
+     * =========================================================
+     */
     private function getSearchTerm(array $queryParams): ?string
     {
         $search = trim($queryParams['s'] ?? '');
@@ -89,9 +101,11 @@ class CatalogService
         return $search !== '' ? $search : null;
     }
 
-    /* =========================================================
+    /*
+     * =========================================================
      * PAGINATION: CURRENT PAGE
-     * ========================================================= */
+     * =========================================================
+     */
     private function getCurrentPage(array $queryParams): int
     {
         $page = filter_var(
@@ -106,9 +120,11 @@ class CatalogService
         return $page;
     }
 
-    /* =========================================================
+    /*
+     * =========================================================
      * PAGINATION LOGIC
-     * ========================================================= */
+     * =========================================================
+     */
     private function buildPagination(?int $totalItems, int $currentPage): array
     {
         $totalItems = $totalItems ?? 0;
@@ -132,9 +148,11 @@ class CatalogService
         ];
     }
 
-    /* =========================================================
+    /*
+     * =========================================================
      * LOAD DATA (DECISION LOGIC MOVED HERE)
-     * ========================================================= */
+     * =========================================================
+     */
     private function loadCatalogData(
         ?string $section,
         ?string $search,
@@ -173,17 +191,21 @@ class CatalogService
         );
     }
 
-    /* =========================================================
+    /*
+     * =========================================================
      * PAGE TITLE
-     * ========================================================= */
+     * =========================================================
+     */
     private function buildPageTitle(?string $section): string
     {
-        return $section ? ucfirst($section) : "Full Catalog";
+        return $section ? ucfirst($section) : 'Full Catalog';
     }
 
-    /* =========================================================
+    /*
+     * =========================================================
      * DATABASE METHODS (already existed in your system)
-     * ========================================================= */
+     * =========================================================
+     */
 
     public function get_catalog_count($section, $search)
     {

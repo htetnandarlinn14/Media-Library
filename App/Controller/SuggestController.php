@@ -1,11 +1,12 @@
 <?php
 
+namespace App\Controller;
+
+use App\Service\FormatService;
 /**
  * Handles media suggestion requests,
  * form validation, and email sending.
  */
-require_once __DIR__ . '/../vendor/autoload.php';
-
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 

@@ -1,10 +1,12 @@
 <?php
 
+namespace App\Contract;
+
 /**
  * Defines methods for retrieving catalog data
  * from the data source.
  */
-interface CatalogRepositoryInterface
+interface CatalogInterface
 {
     // Get total catalog item count
     public function getcatalog_count($category = null, $search = null);

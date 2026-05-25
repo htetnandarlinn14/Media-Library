@@ -1,6 +1,18 @@
 
 <?php
 
+use App\Controller\api\CatalogApiController;
+use App\Controller\api\DetailsApiController;
+use App\Controller\api\SuggestApiController;
+use App\Controller\CatalogController;
+use App\Controller\DetailsController;
+use App\Controller\SuggestController;
+use App\DB\Database;
+use App\Repository\CatalogRepository;
+use App\Repository\FormatRepository;
+use App\Service\CatalogService;
+use App\Service\FormatService;
+
 /**
  * Main application entry point.
  * Initializes dependencies, services, and application routing.
@@ -19,8 +31,6 @@
 define('BASE_PATH', dirname(__DIR__));
 
 require_once BASE_PATH . '/vendor/autoload.php';
-require_once BASE_PATH . '/inc/Database.php';
-require_once BASE_PATH . '/inc/CustomPath.php';
 
 use Dotenv\Dotenv;
 

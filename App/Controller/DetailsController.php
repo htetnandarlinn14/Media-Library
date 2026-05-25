@@ -1,10 +1,13 @@
 <?php
 
+namespace App\Controller;
+
+use App\Service\CatalogService;
+
 /**
  * Handles displaying detailed information
  * for a single catalog item.
- */
-
+ */ 
 class DetailsController
 {
     private CatalogService $catalogService;
@@ -23,7 +26,7 @@ class DetailsController
 
         // Redirect if ID is invalid
         if (!$id) {
-            header("Location: " . BASE_URL . "/Public/index.php?page=catalog");
+            header('Location: ' . BASE_URL . '/Public/index.php?page=catalog');
             exit;
         }
 
@@ -32,13 +35,13 @@ class DetailsController
 
         // Redirect if item does not exist
         if (empty($item)) {
-            header("Location: " . BASE_URL . "/Public/index.php?page=catalog");
+            header('Location: ' . BASE_URL . '/Public/index.php?page=catalog');
             exit;
         }
 
         // Page information
         $pageTitle = $item['title'];
-        $section   = $item['category'];
+        $section = $item['category'];
 
         // Load details view
         require BASE_PATH . '/view/details.php';

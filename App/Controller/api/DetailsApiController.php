@@ -1,9 +1,8 @@
 <?php
+namespace App\Controller\api;
 
-/**
- * Handles displaying detailed information
- * for a single catalog item.
- */
+use App\Service\CatalogService;
+
 class DetailsApiController
 
 {

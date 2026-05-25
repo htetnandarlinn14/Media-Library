@@ -1,11 +1,15 @@
 <?php
 
+namespace App\Repository;
+
+use App\Contract\FormatInterface;
+use PDO;
+
 /**
  * Handles database operations related to formats,
  * categories, and genres using PDO.
  */
-
-class FormatRepository implements FormatRepositoryInterface
+class FormatRepository implements FormatInterface
 {
     private PDO $db;
 
@@ -18,7 +22,7 @@ class FormatRepository implements FormatRepositoryInterface
     // Get formats based on selected category
     function get_format_drop_down($category = null)
     {
-        $result = $this->db->prepare(" CALL sp_get_formats_by_category (:category)");
+        $result = $this->db->prepare(' CALL sp_get_formats_by_category (:category)');
 
         $result->bindValue(
             ':category',
@@ -31,7 +35,7 @@ class FormatRepository implements FormatRepositoryInterface
         $format = array();
 
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $format[$row["category"]][] = $row["format"];
+            $format[$row['category']][] = $row['format'];
         }
 
         $result->closeCursor();
@@ -42,7 +46,7 @@ class FormatRepository implements FormatRepositoryInterface
     // Get all unique categories
     function get_category_drop_down()
     {
-        $sql = " SELECT DISTINCT category FROM view_catalog ORDER BY category";
+        $sql = ' SELECT DISTINCT category FROM view_catalog ORDER BY category';
 
         $result = $this->db->prepare($sql);
         $result->execute();
@@ -53,7 +57,7 @@ class FormatRepository implements FormatRepositoryInterface
     // Get genres based on selected category
     function get_genres_drop_down($category = null)
     {
-        $result = $this->db->prepare(" CALL sp_get_genres_by_category (:category)");
+        $result = $this->db->prepare(' CALL sp_get_genres_by_category (:category)');
 
         $result->bindValue(
             ':category',
@@ -66,7 +70,7 @@ class FormatRepository implements FormatRepositoryInterface
         $genre = array();
 
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $genre[$row["category"]][] = $row["genre"];
+            $genre[$row['category']][] = $row['genre'];
         }
 
         $result->closeCursor();

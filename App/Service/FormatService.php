@@ -1,15 +1,20 @@
 <?php
 
+namespace App\Service;
+
+use App\Contract\FormatInterface;
+use App\DB\Database;
+use App\Repository\FormatRepository;
+
 /**
  * Handles format-related business logic and manages
  * communication between controllers and repositories.
  */
-
 class FormatService
 {
-    private FormatRepositoryInterface $repo;
+    private FormatInterface $repo;
 
-    public function __construct(?FormatRepositoryInterface $repo = null)
+    public function __construct(?FormatInterface $repo = null)
     {
         // Create default repository if none is provided
         if ($repo === null) {

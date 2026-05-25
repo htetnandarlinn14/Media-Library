@@ -1,6 +1,8 @@
 <?php
 
-require_once BASE_PATH . '/Service/CatalogService.php';
+namespace App\Controller;
+
+use App\Service\CatalogService;
 
 class CatalogController
 {

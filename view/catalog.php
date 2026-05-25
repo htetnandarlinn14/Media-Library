@@ -1,4 +1,15 @@
-<?php require BASE_PATH . '/view/layout/header.php'; ?>
+<?php
+use View\ItemView;
+
+$search = $search ?? '';
+$section = $section ?? '';
+$pageTitle = $pageTitle ?? 'Catalog';
+$total_items = $total_items ?? 0;
+$found_in_full_catalog = $found_in_full_catalog ?? 0;
+$catalog = $catalog ?? [];
+
+require BASE_PATH . '/view/layout/header.php';
+?>
 
 <div class="section catalog page">
 	<div class="wrapper">
@@ -6,22 +17,21 @@
 		<h1>
 			<?php
 
-            $isSearching = !empty($search);
-            $hasSection  = !empty($section);
+			$isSearching = !empty($search);
+			$hasSection = !empty($section);
 
-            $title = $isSearching
-            ? 'Search results for "' . htmlspecialchars($search) . '"'
-            : htmlspecialchars($pageTitle);
+			$title = $isSearching
+				? 'Search results for "' . htmlspecialchars($search) . '"'
+				: htmlspecialchars($pageTitle);
 
-            if ($hasSection) {
+			if ($hasSection) {
+				$title .= $isSearching
+					? ' in ' . ucfirst($section)
+					: " <a href='index.php?page=catalog'>Full Catalog</a> &gt; ";
+			}
 
-             $title .= $isSearching
-            ? ' in ' . ucfirst($section)
-            : " <a href='index.php?page=catalog'>Full Catalog</a> &gt; ";
-}
-
-echo $title;
-?>
+			echo $title;
+			?>
 		</h1>
 
 		<?php if ($total_items < 1): ?>
