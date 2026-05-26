@@ -416,3 +416,41 @@ a img {
 
 
 
+/* =========================
+   LOGIN / LOGOUT BUTTONS
+   ========================= */
+
+.auth-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    background: #fff;
+    color: #ef7d7d !important;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.auth-btn:hover {
+    background: #e06767;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+.logout-btn {
+    background: #d9534f;
+    color: #fff !important;
+}
+
+.logout-btn:hover {
+    background: #c9302c;
+}
+
+
+.username {
+    color: #fff;
+    font-weight: bold;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 14px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}

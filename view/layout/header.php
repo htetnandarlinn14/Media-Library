@@ -4,83 +4,194 @@
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($pageTitle ?? 'Media Library') ?></title>
 
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/style.css">
+    <link rel="stylesheet"
+          href="<?= BASE_URL ?>/css/style.css">
 </head>
+
 <body>
 
 <div class="page-container">
 <div class="content">
 
 <header class="header">
+
     <div class="wrapper">
 
         <!-- LOGO -->
         <h1 class="logo">
+
             <a href="<?= BASE_URL ?>/Public/index.php">
-                <img src="<?= BASE_URL ?>/img/Brand-title.png" alt="Media Library">
+
+                <img
+                    src="<?= BASE_URL ?>/img/Brand-title.png"
+                    alt="Media Library">
+
             </a>
+
         </h1>
 
         <!-- NAVIGATION -->
         <ul class="nav">
+
+            <!-- BOOKS -->
             <li class="<?= ($section === 'books') ? 'on' : '' ?>">
+
                 <a href="<?= BASE_URL ?>/Public/index.php?page=catalog&cat=books">
-                    <img src="<?= BASE_URL ?>/img/book.png"> Books
+
+                    <img
+                        src="<?= BASE_URL ?>/img/book.png">
+
+                    Books
+
                 </a>
+
             </li>
 
+            <!-- MOVIES -->
             <li class="<?= ($section === 'movies') ? 'on' : '' ?>">
+
                 <a href="<?= BASE_URL ?>/Public/index.php?page=catalog&cat=movies">
-                    <img src="<?= BASE_URL ?>/img/movie.png"> Movies
+
+                    <img
+                        src="<?= BASE_URL ?>/img/movie.png">
+
+                    Movies
+
                 </a>
+
             </li>
 
+            <!-- MUSIC -->
             <li class="<?= ($section === 'music') ? 'on' : '' ?>">
+
                 <a href="<?= BASE_URL ?>/Public/index.php?page=catalog&cat=music">
-                    <img src="<?= BASE_URL ?>/img/music.png"> Music
+
+                    <img
+                        src="<?= BASE_URL ?>/img/music.png">
+
+                    Music
+
                 </a>
+
             </li>
 
+            <!-- SUGGEST -->
             <li class="<?= ($section === 'suggest') ? 'on' : '' ?>">
+
                 <a href="<?= BASE_URL ?>/Public/index.php?page=suggest">
-                    <img src="<?= BASE_URL ?>/img/suggestion.png"> Suggest
+
+                    <img
+                        src="<?= BASE_URL ?>/img/suggestion.png">
+
+                    Suggest
+
                 </a>
+
             </li>
 
+            <!-- LOGIN / USER -->
             <?php if (!empty($_SESSION['user'])): ?>
-                <li class="<?= ($section === 'logout') ? 'on' : '' ?>">
-                    <a href="<?= BASE_URL ?>/Public/index.php?page=logout">Logout</a>
+
+                <!-- USERNAME -->
+                <li class="username">
+
+                    <?= htmlspecialchars($_SESSION['user']['username']) ?>
+
                 </li>
+
+                <!-- LOGOUT -->
+                <li
+                    class="<?= ($section === 'logout') ? 'on' : '' ?>">
+
+                    <a href="<?= BASE_URL ?>/Public/index.php?page=logout">
+
+                        Logout
+
+                    </a>
+
+                </li>
+
             <?php else: ?>
-                <li class="<?= ($section === 'login') ? 'on' : '' ?>">
-                    <a href="<?= BASE_URL ?>/Public/index.php?page=login">Login</a>
+
+                <!-- LOGIN -->
+                <li
+                    class="<?= ($section === 'login') ? 'on' : '' ?>">
+
+                    <a href="<?= BASE_URL ?>/Public/index.php?page=login">
+
+                        Login
+
+                    </a>
+
                 </li>
-                <li class="<?= ($section === 'register') ? 'on' : '' ?>">
-                    <a href="<?= BASE_URL ?>/Public/index.php?page=register">Register</a>
+
+                <!-- REGISTER -->
+                <li
+                    class="<?= ($section === 'register') ? 'on' : '' ?>">
+
+                    <a href="<?= BASE_URL ?>/Public/index.php?page=register">
+
+                        Register
+
+                    </a>
+
                 </li>
+
             <?php endif; ?>
+
         </ul>
 
     </div>
+
 </header>
 
 <!-- SEARCH BAR -->
- <?php if (empty($hideSearch)): ?>
+
+<?php if (empty($hideSearch)): ?>
+
 <div class="search">
+
     <div class="wrapper">
-        <form method="get" action="<?= BASE_URL ?>/Public/index.php">
-            <input type="hidden" name="page" value="catalog">
+
+        <form
+            method="get"
+            action="<?= BASE_URL ?>/Public/index.php">
+
+            <input
+                type="hidden"
+                name="page"
+                value="catalog">
 
             <?php if (!empty($section)): ?>
-                <input type="hidden" name="cat" value="<?= htmlspecialchars($section) ?>">
+
+                <input
+                    type="hidden"
+                    name="cat"
+                    value="<?= htmlspecialchars($section) ?>">
+
             <?php endif; ?>
 
-            <label for="s">Search:</label>
-            <input type="text" name="s" id="s">
-            <input type="submit" value="Go">
+            <label for="s">
+
+                Search:
+
+            </label>
+
+            <input
+                type="text"
+                name="s"
+                id="s">
+
+            <input
+                type="submit"
+                value="Go">
+
         </form>
+
     </div>
+
 </div>
+
 <?php endif; ?>
 
 <main id="content">
