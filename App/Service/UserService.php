@@ -3,14 +3,18 @@
 namespace App\Service;
 
 use App\Contract\UserInterface;
+use App\Models\User;
+use App\Service\Validator;
 
 class UserService
 {
     private UserInterface $repo;
+    private Validator $validator;
 
     public function __construct(?UserInterface $repo = null)
     {
         $this->repo = $repo;
+        $this->validator = new Validator();
     }
 
     public function authenticate(string $usernameOrEmail, string $password): ?array
@@ -36,24 +40,15 @@ class UserService
 
     public function register(array $data): array
     {
-        $username = trim($data['username'] ?? '');
-        $email = trim($data['email'] ?? '');
-        $password = $data['password'] ?? '';
+        $username = trim($data['username']);
+        $email = trim($data['email']);
+        $password = $data['password'];
 
-        $errors = [];
-
-        if ($username === '') {
-            $errors[] = 'Username is required.';
-        }
-
-        if ($email === '') {
-            $errors[] = 'Email is required.';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'Email is not valid.';
-        }
-
-        if ($password === '') {
-            $errors[] = 'Password is required.';
+        if (!$this->validator->validate($data, User::rules())) {
+            return [
+                'success' => false,
+                'errors' => $this->validator->errors()
+            ];
         }
 
         if (!empty($this->repo->findByUsername($username))) {
@@ -74,7 +69,10 @@ class UserService
         $this->repo->create([
             'username' => $username,
             'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT)
+            'password' => password_hash(
+                $password,
+                PASSWORD_DEFAULT
+            )
         ]);
 
         return [

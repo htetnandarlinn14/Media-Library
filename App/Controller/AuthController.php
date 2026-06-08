@@ -2,15 +2,22 @@
 
 namespace App\Controller;
 
+use App\Request\LoginRequest;
+use App\Request\RegisterUserRequest;
 use App\Service\UserService;
+use App\Validation\Validator;
 
 class AuthController
 {
-    private UserService $userService;
+    private $userService;
+    private $Validator;
 
-    public function __construct(UserService $userService)
-    {
+    public function __construct(
+        UserService $userService,
+        Validator $validator
+    ) {
         $this->userService = $userService;
+        $this->Validator = $validator;
     }
 
     public function login(): void
@@ -19,25 +26,47 @@ class AuthController
         $section = 'login';
         $hideSearch = true;
 
+        $errors = [];
         $usernameOrEmail = '';
-        $errorMessage = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $usernameOrEmail = trim($_POST['username_or_email'] ?? '');
-            $password = $_POST['password'] ?? '';
+            $usernameOrEmail =
+                trim($_POST['username_or_email'] ?? '');
 
-            if ($usernameOrEmail === '' || $password === '') {
-                $errorMessage = 'Please enter your username/email and password.';
-            } else {
-                $user = $this->userService->authenticate($usernameOrEmail, $password);
+            $password =
+                $_POST['password'] ?? '';
+
+            $formData = [
+                'email' => $usernameOrEmail,
+                'password' => $password
+            ];
+
+            $errors = $this->validator->validate(
+                $formData,
+                LoginRequest::rules()
+            );
+
+            if (empty($errors)) {
+                $user =
+                    $this->userService->authenticate(
+                        $usernameOrEmail,
+                        $password
+                    );
 
                 if ($user !== null) {
                     $_SESSION['user'] = $user;
-                    header('Location: ' . BASE_URL . '/Public/index.php?page=catalog');
+
+                    header(
+                        'Location: '
+                        . BASE_URL
+                        . '/Public/index.php?page=catalog'
+                    );
+
                     exit;
                 }
 
-                $errorMessage = 'Invalid login credentials.';
+                $errors['auth'][] =
+                    'Invalid login credentials.';
             }
         }
 
@@ -50,34 +79,42 @@ class AuthController
         $section = 'register';
         $hideSearch = true;
 
-        $username = '';
-        $email = '';
         $successMessage = null;
         $errors = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = trim($_POST['username'] ?? '');
-            $email = trim($_POST['email'] ?? '');
-            $password = $_POST['password'] ?? '';
-            $confirmPassword = $_POST['confirm_password'] ?? '';
+            $formData = [
+                'username' =>
+                    trim($_POST['username'] ?? ''),
+                'email' =>
+                    trim($_POST['email'] ?? ''),
+                'password' =>
+                    $_POST['password'] ?? '',
+                'confirm_password' =>
+                    $_POST['confirm_password'] ?? ''
+            ];
 
-            if ($password !== $confirmPassword) {
-                $errors[] = 'Passwords do not match.';
-            }
+            $errors =
+                $this->validator->validate(
+                    $formData,
+                    RegisterUserRequest::rules()
+                );
 
             if (empty($errors)) {
-                $result = $this->userService->register([
-                    'username' => $username,
-                    'email' => $email,
-                    'password' => $password
-                ]);
+                $result =
+                    $this->userService->register(
+                        $formData
+                    );
 
                 if ($result['success']) {
-                    $successMessage = 'Your account has been created. You may now log in.';
-                    $username = '';
-                    $email = '';
+                    $successMessage =
+                        'Your account has been created.';
                 } else {
-                    $errors = array_merge($errors, $result['errors']);
+                    $errors =
+                        array_merge(
+                            $errors,
+                            $result['errors']
+                        );
                 }
             }
         }
@@ -90,7 +127,12 @@ class AuthController
         session_unset();
         session_destroy();
 
-        header('Location: ' . BASE_URL . '/Public/index.php?page=login');
+        header(
+            'Location: '
+            . BASE_URL
+            . '/Public/index.php?page=login'
+        );
+
         exit;
     }
 }

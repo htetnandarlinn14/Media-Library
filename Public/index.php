@@ -58,39 +58,53 @@ $formatService = new FormatService($formatRepo);
 $userRepo = new UserRepository($db);
 $userService = new UserService($userRepo);
 
+function requireLogin(): void
+{
+    if (empty($_SESSION['user'])) {
+        header('Location: ' . BASE_URL . '/Public/index.php?page=login');
+        exit;
+    }
+}
+
 /* ROUTING */
 
 $page = $_GET['page'] ?? 'home';
 
 switch ($page) {
     case 'details':
+        requireLogin();
         $controller = new DetailsController($catalogService);
         $controller->show();
         break;
 
     case 'suggest':
+        requireLogin();
         $controller = new SuggestController($formatService);
         $controller->index();
         break;
 
     case 'catalog':
+        requireLogin();
         $controller = new CatalogController($catalogService);
         $controller->index();
         break;
 
     case 'api/catalog':
+        requireLogin();
         require_once BASE_PATH . '/App/Controller/api/CatalogApiController.php';
         $controller = new CatalogApiController($catalogService);
         $controller->index();
         break;
 
     case 'api/details':
+        requireLogin();
         require_once BASE_PATH . '/App/Controller/api/DetailsApiController.php';
         $controller = new DetailsApiController($catalogService);
         $controller->show();
         break;
 
     case 'api/suggest':
+        requireLogin();
         require_once BASE_PATH . '/App/Controller/api/SuggestApiController.php';
         $controller = new SuggestApiController($formatService);
         $controller->index();

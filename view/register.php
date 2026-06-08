@@ -115,16 +115,16 @@
 
             <form method="post" action="<?= BASE_URL ?>/Public/index.php?page=register">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" value="<?= htmlspecialchars($username) ?>" required>
+                <input type="text" id="username" name="username" value="<?= htmlspecialchars($username ?? '') ?>" 
 
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="<?= htmlspecialchars($email) ?>" required>
+                <input type="email" id="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>" >
 
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" >
 
                 <label for="confirm_password">Confirm Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
+                <input type="password" id="confirm_password" name="confirm_password" >
 
                 <button type="submit">Register</button>
             </form>
